@@ -26,10 +26,21 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Hide the scrollbar visually — scrollbar-width does NOT affect scrolling behaviour */
+html {
+  scrollbar-width: none;          /* Firefox */
+}
+
+/* Chrome / Safari / Edge — hide scrollbar track without touching overflow */
+::-webkit-scrollbar {
+  display: none;
+}
+
 body {
   margin: 0;
   background: var(--black);
   overscroll-behavior: none;
+  overflow-x: hidden;             /* prevent horizontal bleed on body only */
 }
 
 #root {
