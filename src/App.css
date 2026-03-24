@@ -1,0 +1,139 @@
+/* ─── Loading Overlay ───────────────────────────────────────── */
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.loader-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: min(320px, calc(100vw - 48px));
+}
+
+.loader-label {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.loader-bar-track {
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.loader-bar-fill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    hsl(158, 65%, 55%),
+    hsl(200, 70%, 60%),
+    hsl(158, 65%, 55%)
+  );
+  background-size: 200% 100%;
+  border-radius: 999px;
+  transition: width 0.15s ease;
+  animation: shimmer 1.8s linear infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.loader-pct {
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.3);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+}
+
+/* ─── Canvas & Sticky Container ────────────────────────────── */
+.canvas-sticky {
+  position: sticky;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.main-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* ─── Scroll Hint ───────────────────────────────────────────── */
+.scroll-hint {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+  user-select: none;
+  animation: hintBob 2.4s ease-in-out infinite, hintFade 8s ease forwards 2s;
+}
+
+@keyframes hintBob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(6px); }
+}
+
+@keyframes hintFade {
+  0%   { opacity: 1; }
+  60%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.scroll-hint span {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.scroll-arrow {
+  width: 18px;
+  height: 18px;
+  border-right: 1.5px solid rgba(255, 255, 255, 0.3);
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.3);
+  transform: rotate(45deg);
+}
+
+/* ─── Scroll Spacer ─────────────────────────────────────────── */
+/* Height determines how many pixels of scroll drive the animation.
+   Larger = slower, more deliberate playback. */
+.scroll-spacer {
+  height: 600vh;
+  background: #000;
+  position: relative;
+  z-index: 0;
+}

@@ -1,0 +1,46 @@
+/* ─── Reset & Base ─────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --black: #000000;
+  --white: #ffffff;
+  --accent: hsl(158, 60%, 55%);     /* matcha green tint */
+  --accent2: hsl(28, 80%, 60%);     /* coffee amber */
+  --loader-bg: #0a0a0a;
+  --loader-track: #1a1a1a;
+  --loader-fill-a: hsl(158, 65%, 55%);
+  --loader-fill-b: hsl(200, 70%, 60%);
+  --sans: 'Inter', system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: auto; /* we handle smoothness via RAF */
+  font-family: var(--sans);
+  background: var(--black);
+  color: var(--white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  background: var(--black);
+  overscroll-behavior: none;
+}
+
+#root {
+  /* Override any inherited Vite defaults */
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  border: none;
+  min-height: auto;
+  display: block;
+  text-align: left;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
