@@ -19,22 +19,22 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
   width: min(320px, calc(100vw - 48px));
 }
 
 .loader-label {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.35);
 }
 
 .loader-bar-track {
   width: 100%;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.08);
+  height: 1.5px;
+  background: rgba(255, 255, 255, 0.07);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -43,14 +43,14 @@
   height: 100%;
   background: linear-gradient(
     90deg,
-    hsl(158, 65%, 55%),
-    hsl(200, 70%, 60%),
-    hsl(158, 65%, 55%)
+    hsl(200, 70%, 65%),
+    hsl(240, 60%, 75%),
+    hsl(200, 70%, 65%)
   );
   background-size: 200% 100%;
   border-radius: 999px;
-  transition: width 0.15s ease;
-  animation: shimmer 1.8s linear infinite;
+  transition: width 0.12s ease;
+  animation: shimmer 1.6s linear infinite;
 }
 
 @keyframes shimmer {
@@ -59,11 +59,11 @@
 }
 
 .loader-pct {
-  font-size: 13px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.3);
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.25);
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
 }
 
 /* ─── Canvas & Sticky Container ────────────────────────────── */
@@ -71,7 +71,6 @@
   position: sticky;
   top: 0;
   width: 100%;
-  max-width: 100vw;
   height: 100vh;
   background: #000;
   z-index: 1;
@@ -82,16 +81,15 @@
   display: block;
   width: 100%;
   height: 100%;
-  max-width: 100%;
   background: #000;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
+  /* Let canvas pixel buffer drive sizing — don't let CSS stretch it */
+  object-fit: cover;
 }
 
 /* ─── Scroll Hint ───────────────────────────────────────────── */
 .scroll-hint {
   position: absolute;
-  bottom: 36px;
+  bottom: 32px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -100,43 +98,123 @@
   gap: 10px;
   pointer-events: none;
   user-select: none;
-  animation: hintBob 2.4s ease-in-out infinite, hintFade 8s ease forwards 2s;
+  animation: hintBob 2.6s ease-in-out infinite, hintFade 6s ease forwards 1.5s;
 }
 
 @keyframes hintBob {
   0%, 100% { transform: translateX(-50%) translateY(0); }
-  50%       { transform: translateX(-50%) translateY(6px); }
+  50%       { transform: translateX(-50%) translateY(7px); }
 }
 
 @keyframes hintFade {
   0%   { opacity: 1; }
-  60%  { opacity: 1; }
+  55%  { opacity: 1; }
   100% { opacity: 0; }
 }
 
 .scroll-hint span {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 500;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.28);
 }
 
 .scroll-arrow {
-  width: 18px;
-  height: 18px;
-  border-right: 1.5px solid rgba(255, 255, 255, 0.3);
-  border-bottom: 1.5px solid rgba(255, 255, 255, 0.3);
+  width: 16px;
+  height: 16px;
+  border-right: 1px solid rgba(255, 255, 255, 0.22);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
   transform: rotate(45deg);
 }
 
 /* ─── Scroll Spacer ─────────────────────────────────────────── */
-/* Height determines how many pixels of scroll drive the animation.
-   Larger = slower, more deliberate playback. */
 .scroll-spacer {
   height: 600vh;
   background: #000;
   position: relative;
   z-index: 0;
-  overflow: hidden;
+}
+
+/* ─── Cinematic Text Overlay ────────────────────────────────── */
+.text-overlay {
+  position: absolute;
+  /* Vertically centred — slightly below mid for visual balance */
+  top: 58%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  z-index: 10;
+  pointer-events: none;
+  user-select: none;
+  text-align: center;
+  width: min(820px, calc(100vw - 40px));
+  /* Compositor hint — GPU layer for opacity/transform/filter */
+  will-change: opacity, transform, filter;
+  backface-visibility: hidden;
+}
+
+.text-scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ── Sub label ── */
+.text-sub {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: clamp(9px, 1vw, 11px);
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.38);
+  margin: 0;
+  /* Subtle drop‑shadow so it reads on any frame */
+  text-shadow: 0 1px 12px rgba(0,0,0,0.6);
+}
+
+/* ── Main heading ── */
+.text-main {
+  font-family: 'Poppins', 'Inter', system-ui, sans-serif;
+  font-size: clamp(2rem, 6vw, 5.2rem);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  margin: 0;
+
+  /* Crisp white → cool blue-white gradient — Apple-like */
+  background: linear-gradient(
+    155deg,
+    #ffffff        0%,
+    #d8e8ff       45%,
+    rgba(255,255,255,0.82) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+
+  /* Readable luminous glow that doesn't bleed */
+  filter: drop-shadow(0 0 28px rgba(160,200,255,0.18))
+          drop-shadow(0 2px 4px rgba(0,0,0,0.55));
+}
+
+/* ── Optional accent class for key words / spans ── */
+.text-accent {
+  font-weight: 700;
+  background: linear-gradient(90deg, hsl(200,80%,70%), hsl(230,70%,75%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Responsive tweaks ─────────────────────────────────────── */
+@media (max-width: 600px) {
+  .text-overlay {
+    top: 62%;
+    width: calc(100vw - 32px);
+  }
+  .text-main {
+    font-weight: 600;
+    line-height: 1.18;
+  }
 }
