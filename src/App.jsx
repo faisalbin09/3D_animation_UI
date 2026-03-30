@@ -4,7 +4,6 @@ import './App.css'
 const TOTAL_FRAMES = 196
 const FRAME_PATH = (n) => `/sequence/ezgif-frame-${String(n).padStart(3, '0')}.jpg`
 
-// Pre-load all frames into Image objects
 function preloadFrames(onProgress) {
   return new Promise((resolve) => {
     const images = new Array(TOTAL_FRAMES)
@@ -32,8 +31,24 @@ export default function App() {
 
   const [loadProgress, setLoadProgress] = useState(0)
   const [ready, setReady] = useState(false)
+  const [currentSection, setCurrentSection] = useState(0)
 
-  // Draw the current frame index onto canvas
+  const sections = [
+    "Meet the most chaotic, legendary, and slightly questionable friend group you’ll ever witness.",
+
+    "Meet Faisal — the mastermind behind this legendary masterpiece. Built different, thinks faster than bugs appear, and somehow made this site look this good.",
+
+    "Meet Arfath — built like he never skips a meal and never misses one either. Professional eater, part-time menace, full-time target of jokes.",
+
+    "Meet Pratham — always acting serious like he runs the world. Bro thinks he’s the main character but forgets the script daily.",
+
+    "Meet Wahab — calm on the outside, absolute chaos on the inside. You never know what he’s thinking… and that’s the scary part.",
+
+    "Meet Leeladhar — silent observer, random speaker. Drops one line and disappears like it was a side quest.",
+
+    "GOATESH GROUP MREC"
+  ]
+
   const drawFrame = useCallback((index) => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -46,20 +61,18 @@ export default function App() {
     const iw = img.naturalWidth
     const ih = img.naturalHeight
 
-    // Contain: fit the image inside the canvas, centered (letterbox)
     const scale = Math.min(cw / iw, ch / ih)
     const dw = iw * scale
     const dh = ih * scale
     const dx = (cw - dw) / 2
     const dy = (ch - dh) / 2
 
-    ctx.clearRect(0, 0, cw, dh + dy * 2)
+    ctx.clearRect(0, 0, cw, ch)
     ctx.fillStyle = '#000'
     ctx.fillRect(0, 0, cw, ch)
     ctx.drawImage(img, dx, dy, dw, dh)
   }, [])
 
-  // Resize canvas to fill the window
   const resizeCanvas = useCallback(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -68,19 +81,29 @@ export default function App() {
     if (ready) drawFrame(frameIndexRef.current)
   }, [ready, drawFrame])
 
-  // Scroll handler — maps scroll position to frame index
+  // ✅ SINGLE CORRECT SCROLL HANDLER
   const onScroll = useCallback(() => {
     if (!ready) return
+
     const scrollTop = window.scrollY
     const maxScroll = document.documentElement.scrollHeight - window.innerHeight
     const progress = Math.max(0, Math.min(1, scrollTop / maxScroll))
+
+    // Frame control
     frameIndexRef.current = Math.min(
       TOTAL_FRAMES - 1,
       Math.floor(progress * TOTAL_FRAMES)
     )
-  }, [ready])
 
-  // Animation loop — only redraws when index changes
+    // Text section control
+    const sectionIndex = Math.min(
+      sections.length - 1,
+      Math.floor(progress * sections.length)
+    )
+
+    setCurrentSection(sectionIndex)
+  }, [ready, sections.length])
+
   const loop = useCallback(() => {
     if (frameIndexRef.current !== lastFrameRef.current) {
       drawFrame(frameIndexRef.current)
@@ -89,7 +112,6 @@ export default function App() {
     rafRef.current = requestAnimationFrame(loop)
   }, [drawFrame])
 
-  // Preload
   useEffect(() => {
     preloadFrames((p) => setLoadProgress(p)).then((images) => {
       imagesRef.current = images
@@ -97,7 +119,6 @@ export default function App() {
     })
   }, [])
 
-  // Once ready: set up canvas, listeners, RAF loop
   useEffect(() => {
     if (!ready) return
 
@@ -117,7 +138,6 @@ export default function App() {
 
   return (
     <>
-      {/* Loading overlay */}
       {!ready && (
         <div className="loader-overlay">
           <div className="loader-inner">
@@ -133,18 +153,20 @@ export default function App() {
         </div>
       )}
 
-      {/* Sticky canvas */}
       <div className="canvas-sticky">
         <canvas ref={canvasRef} className="main-canvas" />
 
-        {/* Scroll hint — fades out as we scroll */}
+        {/* 🔥 TEXT OVERLAY */}
+        <div className="overlay-text">
+          {sections[currentSection]}
+        </div>
+
         <div className="scroll-hint">
           <span>Scroll to explore</span>
           <div className="scroll-arrow" />
         </div>
       </div>
 
-      {/* Tall scroll space that drives the animation */}
       <div className="scroll-spacer" />
     </>
   )
